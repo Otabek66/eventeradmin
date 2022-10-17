@@ -1,60 +1,70 @@
-
+import 'package:eventeradmin/screens/home/cubit/home_cubit.dart';
+import 'package:eventeradmin/screens/home/state/home_state.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:html/dom.dart' as dom;
-class HomeView extends StatefulWidget {
-  const HomeView({super.key});
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-  @override
-  State<HomeView> createState() => _HomeViewState();
-}
+class HomeView extends StatelessWidget {
+  HomeView({Key? key}) : super(key: key);
 
-class _HomeViewState extends State<HomeView> {
-
-  List info = [];
-
-  @override
-  void initState() {
-    super.initState();
-
-    getWebsiteData();
-  }
-
-  Future getWebsiteData() async {
-    final url = Uri.parse(
-        "https://www.ictweek.uz/uz/qr-check/023bb682-35e1-11ed-b5a6-005056b672ed");
-    final response = await http.get(url);
-    dom.Document html = dom.Document.html(response.body);
-
-    final keys = html
-        .querySelectorAll("#w0 > tBody > tr > td")
-        .map((element) => element.innerHtml.trim())
-        .toList();
-
-        print("Count: ${keys.length}");
-        for(final key in keys){
-          debugPrint(key);
-        }
-        info = keys;
-        print(info[1]);
-        setState(() {
-          
-        });
-
-  }
-
+  PageController pageController = PageController();
   @override
   Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) {
+        var cubit = HomeCubit();
+        cubit.getWebsiteData();
+        return cubit;
+      },
+      child: myScaffold(context),
+    );
+  }
 
+  Scaffold myScaffold(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("App Bar"),
+        title: const Text('Home View'),
       ),
-      body: ListView.builder(itemBuilder: ((context, index) {
-        return ListTile(title: Text(index != info.length-1 ? info[index] : ""),);
-      }
+      body: BlocConsumer<HomeCubit, HomeState>(
+        listener: (context, state) {
+          if (state is HomeError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.msg),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        },
+        builder: (context, state) {
+          if (state is HomeInitial) {
+            return SizedBox(
+              
+              child: Stack(
+                children: [
+                  Positioned(child: Text('Please Scan QR')),
+                  Positioned(
+                   left: 20,
+                    child: ElevatedButton(
+                      onPressed: () {
+                  
+                      },
+                      child: const Text("Scan QR"),
+                    ),
+                  )
+                ],
+              ),
+            );
+          } else if (state is HomeLoading) {
+            return const Center(
+              child: CircularProgressIndicator.adaptive(),
+            );
+          } else if (state is HomeComplate) {
+            return Container();
+          } else {
+            return Center(child: Text((state as HomeError).msg));
+          }
+        },
       ),
-      itemCount: info.length,)
     );
   }
 }
