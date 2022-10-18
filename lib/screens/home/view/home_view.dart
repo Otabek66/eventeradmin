@@ -2,6 +2,7 @@ import 'package:eventeradmin/screens/home/cubit/home_cubit.dart';
 import 'package:eventeradmin/screens/home/state/home_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class HomeView extends StatelessWidget {
   HomeView({Key? key}) : super(key: key);
@@ -38,12 +39,15 @@ class HomeView extends StatelessWidget {
         builder: (context, state) {
           if (state is HomeInitial) {
             return SizedBox(
-              
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
               child: Stack(
                 children: [
                   Positioned(child: Text('Please Scan QR')),
                   Positioned(
-                   left: 20,
+                   right: 50,
+                   left: 50,
+                   bottom: 50,
                     child: ElevatedButton(
                       onPressed: () {
                   
