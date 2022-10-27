@@ -1,19 +1,28 @@
+import 'package:eventeradmin/constants/color_const.dart';
 import 'package:eventeradmin/screens/home/cubit/home_cubit.dart';
 import 'package:eventeradmin/screens/home/state/home_state.dart';
+import 'package:eventeradmin/screens/home/view/scan_qr_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class HomeView extends StatelessWidget {
-  HomeView({Key? key}) : super(key: key);
+// ignore: must_be_immutable
+class HomeView extends StatefulWidget {
+  const HomeView({Key? key}) : super(key: key);
 
+  @override
+  State<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
   PageController pageController = PageController();
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) {
         var cubit = HomeCubit();
-        cubit.getWebsiteData();
+        cubit.getHttp();
         return cubit;
       },
       child: myScaffold(context),
@@ -21,9 +30,12 @@ class HomeView extends StatelessWidget {
   }
 
   Scaffold myScaffold(BuildContext context) {
+    var data = context.watch<HomeCubit>();
+    var dataFunction = context.read<HomeCubit>();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home View'),
+        backgroundColor: ColorsConst.kprimaryColor,
       ),
       body: BlocConsumer<HomeCubit, HomeState>(
         listener: (context, state) {
@@ -37,33 +49,12 @@ class HomeView extends StatelessWidget {
           }
         },
         builder: (context, state) {
-          if (state is HomeInitial) {
-            return SizedBox(
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              child: Stack(
-                children: [
-                  Positioned(child: Text('Please Scan QR')),
-                  Positioned(
-                   right: 50,
-                   left: 50,
-                   bottom: 50,
-                    child: ElevatedButton(
-                      onPressed: () {
-                  
-                      },
-                      child: const Text("Scan QR"),
-                    ),
-                  )
-                ],
-              ),
-            );
-          } else if (state is HomeLoading) {
+         if (state is HomeLoading) {
             return const Center(
               child: CircularProgressIndicator.adaptive(),
             );
-          } else if (state is HomeComplate) {
-            return Container();
+          } else if (state is HomeComplate) { 
+            return QrView();
           } else {
             return Center(child: Text((state as HomeError).msg));
           }

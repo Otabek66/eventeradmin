@@ -1,11 +1,17 @@
-import 'package:eventeradmin/screens/home/view/home_view.dart';
+import 'package:eventeradmin/screens/home/cubit/home_cubit.dart';
+import 'package:eventeradmin/screens/home/view/scan_qrw_view_without_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-
-void main() {
-  runApp(const MyApp());
+import 'package:get_storage/get_storage.dart';
+void main() async{ 
+  await GetStorage.init();
+  runApp(MultiBlocProvider(providers: [
+    BlocProvider(create: (context) => HomeCubit()),
+  ], child: const MyApp()));
 }
+
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -29,7 +35,7 @@ class MyApp extends StatelessWidget {
           home: child,
         );
       },
-      child: HomeView(),
+      child: QrViewWitoutservice(),
     );
   }
 }
