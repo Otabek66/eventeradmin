@@ -9,17 +9,20 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_country_state/flutter_country_state.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_storage/get_storage.dart';
 
-class QrViewWitoutservice extends StatefulWidget {
-  QrViewWitoutservice({super.key});
+import '../../../widget/country_bottom_sheet.dart';
+
+class ChangeablePage extends StatefulWidget {
+  ChangeablePage({super.key});
 
   @override
-  State<QrViewWitoutservice> createState() => _QrViewWitoutserviceState();
+  State<ChangeablePage> createState() => _ChangeablePageState();
 }
 
-class _QrViewWitoutserviceState extends State<QrViewWitoutservice> {
+class _ChangeablePageState extends State<ChangeablePage> {
   String barcodeScanRes = "";
   List<String> liste = [
     '1',
@@ -65,6 +68,9 @@ class _QrViewWitoutserviceState extends State<QrViewWitoutservice> {
       TextEditingController(text: "172.20.22.138");
   dynamic finalprintnum = "1";
 
+
+String selectedCountry = "";
+String selectedState = "";
   @override
   Widget build(BuildContext context) {
     var data = context.watch<HomeCubit>();
@@ -140,24 +146,23 @@ class _QrViewWitoutserviceState extends State<QrViewWitoutservice> {
       ),
       body: Stack(
         children: [
-          Column(
-            children: [
-              SizedBox(
-                height: 520.h,
-                width: 360.w,
-                child: ListView.builder(
-                  itemCount: info.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return ListTile(
-                      title: Text(info[index]),
-                      subtitle:
-                          Text(a[index] == "" ? "No information" : a[index]),
-                      // subtitle: Text(),
-                    );
-                  },
-                ),
-              ),
-            ],
+
+          Positioned(
+            left: 50.w,
+            child: ElevatedButton(child: Text("country"),onPressed: (() {
+            CountryBottomSheet().showCountry(context: context,
+                tap: (){
+                 setState(() {
+                   selectedCountry = Variables.country;
+                      });
+                 Navigator.pop(context);
+                }
+              );
+          }),)),
+          Positioned(
+            top: 100.h,
+            child: 
+          Text(selectedCountry)
           ),
           Positioned(
               bottom: 35.r,
