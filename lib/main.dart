@@ -1,6 +1,8 @@
 
 import 'package:eventeradmin/screens/home/cubit/home_cubit.dart';
 import 'package:eventeradmin/screens/home/view/changeable_page_view.dart';
+import 'package:eventeradmin/screens/home/view/check_members_view.dart';
+import 'package:eventeradmin/screens/home/view/read_text_view.dart';
 import 'package:eventeradmin/screens/home/view/scan_qrw_view_without_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -37,7 +39,7 @@ class MyApp extends StatelessWidget {
           home: child,
         );
       },
-      child: ChangeablePage(),
+      child: CheckMemberView(),
     );
   }
 }
